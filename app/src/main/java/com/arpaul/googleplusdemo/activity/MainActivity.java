@@ -1,12 +1,16 @@
 package com.arpaul.googleplusdemo.activity;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arpaul.googleplusdemo.R;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.SignInButton;
@@ -35,6 +41,9 @@ import com.google.android.gms.plus.model.people.PersonBuffer;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import static android.Manifest.permission.GET_ACCOUNTS;
+import static android.Manifest.permission.READ_CONTACTS;
+
 
 public class MainActivity extends AppCompatActivity implements OnConnectionFailedListener, View.OnClickListener, ConnectionCallbacks, ResultCallback<LoadPeopleResult> {
     GoogleApiClient google_api_client;
@@ -48,12 +57,19 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
     private int request_code;
     ProgressDialog progress_dialog;
 
+    private static final int REQUEST_READ_CONTACTS = 0;
+    private static final int REQUEST_GET_ACCOUNTS = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        buidNewGoogleApiClient();
         setContentView(R.layout.activity_main);
+
+        mayRequestContacts();
+        mayRequestAccounts();
+
+        buidNewGoogleApiClient();
         //Customize sign-in button.a red button may be displayed when Google+ scopes are requested
         custimizeSignBtn();
         setBtnClickListeners();
@@ -70,6 +86,16 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
     private void buidNewGoogleApiClient(){
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+//        google_api_client = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .build();
+
         google_api_client =  new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -77,6 +103,50 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addScope(Plus.SCOPE_PLUS_PROFILE)
                 .build();
+    }
+
+    private boolean mayRequestContacts() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
+            Snackbar.make(signIn_btn, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+        }
+        return false;
+    }
+
+    private boolean mayRequestAccounts() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(GET_ACCOUNTS)) {
+            Snackbar.make(signIn_btn, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{GET_ACCOUNTS}, REQUEST_GET_ACCOUNTS);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{GET_ACCOUNTS}, REQUEST_GET_ACCOUNTS);
+        }
+        return false;
     }
 
     /*
@@ -127,23 +197,7 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         }
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        if (!result.hasResolution()) {
-            google_api_availability.getErrorDialog(this, result.getErrorCode(),request_code).show();
-            return;
-        }
 
-        if (!is_intent_inprogress) {
-
-            connection_result = result;
-
-            if (is_signInBtn_clicked) {
-
-                resolveSignInError();
-            }
-        }
-    }
 
     /*
       Will receive the activity result and check which request we are responding to
@@ -166,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 google_api_client.connect();
             }
         }
-
     }
 
     @Override
@@ -177,13 +230,30 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
         // Update the UI after signin
         changeUI(true);
-
     }
 
     @Override
     public void onConnectionSuspended(int arg0) {
         google_api_client.connect();
         changeUI(false);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        if (!result.hasResolution()) {
+            google_api_availability.getErrorDialog(this, result.getErrorCode(),request_code).show();
+            return;
+        }
+
+        if (!is_intent_inprogress) {
+
+            connection_result = result;
+
+            if (is_signInBtn_clicked) {
+
+                resolveSignInError();
+            }
+        }
     }
 
     @Override
@@ -204,7 +274,8 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
             case R.id.frnd_button:
                 Toast.makeText(this, "G+ Friend List", Toast.LENGTH_LONG).show();
-                Plus.PeopleApi.loadVisible(google_api_client, null).setResultCallback(this);
+//                Plus.PeopleApi.loadVisible(google_api_client, null).setResultCallback(this);
+                Plus.PeopleApi.loadConnected(google_api_client).setResultCallback(this);
 
                 break;
 
@@ -280,12 +351,9 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         }
     }
 
-
-
     /*
      get user's information name, email, profile pic,Date of birth,tag line and about me
      */
-
     private void getProfileInfo() {
 
         try {

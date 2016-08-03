@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private String GooglePlusDemo = " AIzaSyDgO53HCBInly4xaQ135HZqK9p-Jso0rco";
     private String CLIENT_ID = "625213001965-60jksnhdhjjjp122eftvqclb75vmdbbc.apps.googleusercontent.com";
+    private String CLIENT_ID1 = "625213001965-v7luv9q38c5rj82ljph9kjaags6asind.apps.googleusercontent.com";
     //https://www.numetriclabz.com/android-google-plus-integration-and-login-tutorial/
 
 
