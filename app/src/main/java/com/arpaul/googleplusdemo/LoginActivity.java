@@ -63,7 +63,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
 
     private String GooglePlusDemo = " AIzaSyDgO53HCBInly4xaQ135HZqK9p-Jso0rco";
+    private String CLIENT_ID = "625213001965-60jksnhdhjjjp122eftvqclb75vmdbbc.apps.googleusercontent.com";
     //https://www.numetriclabz.com/android-google-plus-integration-and-login-tutorial/
+
+
+    //http://stackoverflow.com/questions/27609442/how-to-get-the-sha1-fingerprint-certificate-in-android-studio-for-debug-mode
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

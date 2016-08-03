@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "625213001965",
+    "project_id": "total-scion-139116"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625213001965:android:c8fb5a4d825d36ef",
+        "android_client_info": {
+          "package_name": "com.arpaul.googleplusdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625213001965-60jksnhdhjjjp122eftvqclb75vmdbbc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.arpaul.googleplusdemo",
+            "certificate_hash": "E56405F7FE0A14EE18F4283403BB20EDB2525E30"
+          }
+        },
+        {
+          "client_id": "625213001965-31fma43o5t964f0t9ae4coflviktuvpb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCv7dtO0-FnY1UInYpOuPfeOKviJbq2e-Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
