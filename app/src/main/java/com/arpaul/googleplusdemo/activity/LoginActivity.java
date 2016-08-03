@@ -1,4 +1,4 @@
-package com.arpaul.googleplusdemo;
+package com.arpaul.googleplusdemo.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -28,6 +28,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.arpaul.googleplusdemo.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -354,4 +356,3 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 }
-
