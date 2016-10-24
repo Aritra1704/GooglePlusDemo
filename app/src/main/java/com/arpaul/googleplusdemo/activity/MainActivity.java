@@ -159,11 +159,9 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
     */
 
     private void custimizeSignBtn(){
-
         signIn_btn = (SignInButton) findViewById(R.id.sign_in_button);
         signIn_btn.setSize(SignInButton.SIZE_STANDARD);
         signIn_btn.setScopes(new Scope[]{Plus.SCOPE_PLUS_LOGIN});
-
     }
 
     /*
